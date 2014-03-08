@@ -1,4 +1,4 @@
 C
 =
 
-Fow now this repo will contain only exercises from the book "The Linux Programming Interface".
+For now this repo will contain only exercises from the book "The Linux Programming Interface".
