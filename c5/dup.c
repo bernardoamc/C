@@ -10,7 +10,7 @@ typedef int bool;
 #endif
 
 void error(const char *message);
-int dupClone(int fd, int startFrom);
+int dupClone(int fd);
 int dup2Clone(int fd, int newFd);
 
 int main(int argc, char *argv[]) {
@@ -23,8 +23,8 @@ void error(const char *message) {
   exit(EXIT_FAILURE);
 }
 
-int dupClone(int fd, int startFrom) {
-  return fcntl(fd, F_DUPFD, startFrom);
+int dupClone(int fd) {
+  return fcntl(fd, F_DUPFD);
 }
 
 int dup2Clone(int fd, int newFd) {
