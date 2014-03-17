@@ -17,9 +17,9 @@ ssize_t readv_dup(int fd, const Iovec *iov, int iovcount);
 ssize_t writev_dup(int fd, const Iovec *iov, int iovcount);
 
 int main(int argc, char *argv[]) {
+  Iovec iov[2];
   int fd;
   ssize_t bytesRead, bytesWritten, totalBytesRead, totalBytesWritten;
-  Iovec iov[2];
   char buffer1[BUFFER_SIZE], buffer2[BUFFER_SIZE];
 
   if (argc < 2 || strcmp(argv[1], "--help") == 0) {
@@ -75,35 +75,65 @@ int openFile(char *name)
 }
 
 ssize_t readv_dup(int fd, const Iovec *iov, int iovcount) {
-  ssize_t numRead, totalRead = 0;
   int i;
+  size_t memSize = 0;
+  ssize_t numCopied, numRead;
+  void *buf;
 
-  for (i = 0; i < iovcount; i++) {
-    numRead = read(fd, iov[i].base, iov[i].len);
-
-    if (numRead == -1) {
-      error("Couldn't read from file");
-    }
-
-    totalRead += numRead;
+  /* Calculates all the space that will be required */
+  for (i = 0; i < iovcount; ++i) {
+    memSize += iov[i].len;
   }
 
-  return totalRead;
+  buf = malloc(memSize);
+  if (buf == NULL) {
+    error("malloc");
+  }
+
+  /* Reads all the data from the file into the buffer */
+  numRead = read(fd, buf, memSize);
+  if (numRead == -1) {
+    return numRead;
+  }
+
+  /* Copies read data to the iovec structure */
+  numCopied = 0;
+  for (i = 0; i < iovcount; ++i) {
+    memcpy(iov[i].base, buf + numCopied, iov[i].len);
+    numCopied += iov[i].len;
+  }
+
+  free(buf);
+
+  return numRead;
 }
 
 ssize_t writev_dup(int fd, const Iovec *iov, int iovcount) {
-  ssize_t numWritten, totalWritten = 0;
   int i;
+  size_t memSize;
+  ssize_t numCopied, numWritten;
+  void *buf;
 
-  for (i = 0; i < iovcount; i++) {
-    numWritten = write(fd, iov[i].base, iov[i].len);
-
-    if (numWritten != iov[i].len) {
-      error("Couldn't write to file");
-    }
-
-    totalWritten += numWritten;
+  /* Calculates all the space that will be required */
+  memSize = 0;
+  for (i = 0; i < iovcount; ++i) {
+    memSize += iov[i].len;
   }
 
-  return totalWritten;
+  buf = malloc(memSize);
+  if (buf == NULL) {
+    error("malloc");
+  }
+
+  /* Copies data to the buffer */
+  numCopied = 0;
+  for (i = 0; i < iovcount; ++i) {
+    memcpy(buf + numCopied, iov[i].base, iov[i].len);
+    numCopied += iov[i].len;
+  }
+
+  numWritten = write(fd, buf, memSize);
+  free(buf);
+
+  return numWritten;
 }
