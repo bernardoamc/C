@@ -17,22 +17,22 @@ int _unsetenv(const char *);
 int _setenv(const char *, const char *, int);
 
 int main(int argc, char *argv[]) {
-    printf("Current environment list:\n");
-    environment_list();
+  printf("Current environment list:\n");
+  environment_list();
 
-    _setenv("LPI", "FAILURE", 0);
-    environment_list();
+  _setenv("LPI", "FAILURE", 0);
+  environment_list();
 
-    _setenv("LPI", "SUCCESS", 1);
-    environment_list();
+  _setenv("LPI", "SUCCESS", 1);
+  environment_list();
 
-    _setenv("LPI", "FAILURE", 0);
-    environment_list();
+  _setenv("LPI", "FAILURE", 0);
+  environment_list();
 
-    _unsetenv("LPI");
-    environment_list();
+  _unsetenv("LPI");
+  environment_list();
 
-    exit(EXIT_SUCCESS);
+  exit(EXIT_SUCCESS);
 }
 
 void environment_list(void) {
