@@ -26,8 +26,6 @@ int main(int argc, char *argv[]) {
   char *ptr[MAX_ALLOCS];
   int freeStep, freeMin, freeMax, blockSize, numAllocs, j;
 
-  printf("\n");
-
   if (argc < 3 || strcmp(argv[1], "--help") == 0) {
     usage(argv[0]);
   }
@@ -49,19 +47,18 @@ int main(int argc, char *argv[]) {
   }
 
   printf("Initial program break: %10p\n", sbrk(0));
-  printf("Allocating %d*%d bytes\n", numAllocs, blockSize);
+  printf("Allocating %d*%d bytes\n\n", numAllocs, blockSize);
 
   for (j = 0; j < numAllocs; j++) {
     ptr[j] = malloc(blockSize);
     printf("Current program break: %10p\n", sbrk(0));
 
     if (ptr[j] == NULL) {
-        failure("malloc");
+      failure("malloc");
     }
   }
 
-  printf("Program break is now: %10p\n", sbrk(0));
-  printf("Freeing blocks from %d to %d in steps of %d\n", freeMin, freeMax, freeStep);
+  printf("\nFreeing blocks from %d to %d in steps of %d\n", freeMin, freeMax, freeStep);
 
   for (j = freeMin - 1; j < freeMax; j += freeStep) {
     free(ptr[j]);
