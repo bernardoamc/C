@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <pwd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 struct passwd * _getpwnam(const char *name);
 
@@ -29,9 +31,18 @@ int main(int argc, char *argv[]) {
 
 struct passwd * _getpwnam(const char *name) {
   struct passwd *record;
+  size_t maxUsernameLength;
+
+  maxUsernameLength = sysconf(_SC_LOGIN_NAME_MAX);
+
+  if (maxUsernameLength == -1) {
+    maxUsernameLength = 256; /* make a guess */
+  }
+
+  setpwent();
 
   while ((record = getpwent()) != NULL) {
-    if (strcmp(record->pw_name, name) == 0) {
+    if (strncmp(record->pw_name, name, maxUsernameLength) == 0) {
       endpwent();
 
       return record;
