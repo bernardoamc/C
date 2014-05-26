@@ -6,6 +6,6 @@ kernel level via "write".
 
 - fsync(fileno(fp));
 
-The command force the file to sync it's state to "synchronized I/O file integrity".
+The command force the file to sync its state to "synchronized I/O file integrity".
 This means the above will flush to disk all the buffered data and metadata
 associated with this file descriptor.
