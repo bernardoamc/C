@@ -27,7 +27,6 @@
 #include <unistd.h>
 
 #define PATH_MAX 1024
-#define MAX_FILES 1024
 
 void helpAndLeave(const char *progname, int status);
 void pexit(const char *fCall);
@@ -42,10 +41,15 @@ int main(int argc, char *argv[]) {
     helpAndLeave(argv[0], EXIT_FAILURE);
   }
 
+  errno = 0;
   files = strtol(argv[2], NULL, 10);
 
   if(errno) {
     pexit("strtol");
+  }
+
+  if (!files) {
+    helpAndLeave(argv[0], EXIT_FAILURE);
   }
 
   filenames = malloc(files * sizeof(int));
@@ -57,10 +61,15 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < files; i++) {
     filenames[i] = rand() % 1000000;
     snprintf(filename, PATH_MAX, "%s/x%06d", argv[1], filenames[i]);
+    errno = 0;
 
-    while((fd = open(filename, O_WRONLY | O_CREAT | O_EXCL)) == -1) {
+    while(((fd = open(filename, O_WRONLY | O_CREAT | O_EXCL)) == -1) && (!errno || errno == EEXIST)) {
       filenames[i] = rand() % 1000000;
       snprintf(filename, PATH_MAX, "%s/x%06d", argv[1], filenames[i]);
+    }
+
+    if (errno && errno != EEXIST) {
+      pexit("open");
     }
 
     if (write(fd, "a", 1) != 1) {
@@ -77,7 +86,7 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < files; i++) {
     snprintf(filename, PATH_MAX, "%s/x%06d", argv[1], filenames[i]);
 
-    if ((unlink(filename)) == -1) {
+    if (unlink(filename) == -1) {
       pexit("unlink");
     }
   }
@@ -92,7 +101,7 @@ void helpAndLeave(const char *progname, int status) {
     stream = stdout;
   }
 
-  fprintf(stream, "Usage: %s <filename>\n", progname);
+  fprintf(stream, "Usage: %s  <dir> <number_of_files_greater_than_zero>\n", progname);
   exit(status);
 }
 
