@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     helpAndLeave(argv[0], EXIT_FAILURE);
   }
 
-  if ((fd = open(argv[j], O_RDONLY)) == -1) {
+  if ((fd = open(argv[2], O_RDONLY)) == -1) {
     pexit("open");
   }
 
