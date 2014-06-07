@@ -18,14 +18,18 @@ void pexit(const char *fCall);
 int chmod_arx(const char *pathname);
 
 int main(int argc, char *argv[]) {
+  int i;
+
   if (argc < 2) {
     helpAndLeave(argv[0], EXIT_FAILURE);
   }
 
-  if (chmod_arx(argv[1]) == 0) {
-    printf("Permissions modified!\n");
-  } else {
-    pexit("chmod");
+  for (i = 1; i < argc; ++i) {
+    if (chmod_arx(argv[i]) == 0) {
+      printf("Permissions modified!\n");
+    } else {
+      pexit("chmod");
+    }
   }
 
   return EXIT_SUCCESS;
