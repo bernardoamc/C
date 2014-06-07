@@ -43,10 +43,10 @@ int chmod_arx(const char *pathname) {
   }
 
   if (((sb.st_mode & S_IFMT) == S_IFDIR) ||
-       ((sb.st_mode & S_IXUSR) || (sb.st_mode & S_IXGRP) || (sb.st_mode & S_IXGRP))) {
-    permissions = r_x;
+       ((sb.st_mode & S_IXUSR) || (sb.st_mode & S_IXGRP) || (sb.st_mode & S_IXOTH))) {
+    permissions = r_x | sb.st_mode;
   } else {
-    permissions = r;
+    permissions = r | sb.st_mode;
   }
 
   return chmod(pathname, permissions);
