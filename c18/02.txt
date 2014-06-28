@@ -1,0 +1,16 @@
+Why does the call to chmod() in the following code fail?
+
+mkdir("test", S_IRUSR | S_IWUSR | S_IXUSR);
+chdir("test");
+fd = open("myfile", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+symlink("myfile", "../mylink");
+chmod("../mylink", S_IRUSR);
+
+-------------------------------------------------------------------------------
+
+The problem with the following call to `chmod` is that symlinks are dereferenced
+relative to the directory they reside. The code above is assuming that the symlink
+will be dereferenced relative to the current directory of the process.
+
+What's happening is that `chmod` is looking for `myfile` in the folder that `mylink`
+is located, which is `..` but `myfile` is inside `/test`.
