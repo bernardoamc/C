@@ -13,4 +13,4 @@ relative to the directory they reside. The code above is assuming that the symli
 will be dereferenced relative to the current directory of the process.
 
 What's happening is that `chmod` is looking for `myfile` in the folder that `mylink`
-is located, which is `..` but `myfile` is inside `/test`.
+is located, which is `..` but `myfile` is inside `test`.

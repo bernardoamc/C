@@ -18,8 +18,7 @@
 
 #define TYPES 7
 typedef enum { REGULAR, DIRECTORY, CHAR, BLOCK, LINK, FIFO, SOCKET } Types;
-static int types_quantity[7];
-
+static int types_quantity[TYPES];
 
 static int parse_files(const char *, const struct stat *, int, struct FTW *);
 void helpAndLeave(const char *progname, int status);
@@ -32,7 +31,7 @@ int main(int argc, char *argv[]) {
     helpAndLeave(argv[0], EXIT_FAILURE);
   }
 
-  if (nftw(argv[1], &parse_files, 10, FTW_PHYS) == -1) {
+  if (nftw(argv[1], parse_files, 10, FTW_PHYS) == -1) {
     pexit("nftw");
   }
 
@@ -53,6 +52,16 @@ int main(int argc, char *argv[]) {
 
 static int parse_files(const char *path, const struct stat *sb, int flag, struct FTW *ftwb)
 {
+    if (flag == FTW_DNR) {
+      /* directory that could not be read */
+      return 0;
+    }
+
+    if (flag == FTW_NS) {
+      /* stat failed - the stat buffer content is undefined */
+      return 0;
+    }
+
     switch (sb->st_mode & S_IFMT) {
       case S_IFREG:  types_quantity[REGULAR]++;    break;
       case S_IFDIR:  types_quantity[DIRECTORY]++;    break;

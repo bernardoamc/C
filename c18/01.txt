@@ -11,7 +11,7 @@ How is this possible?!
 This, my friend, is possible because the compiler is not trying to open the
 file, instead it's just creating a new one as we can see with the `ls -li` call.
 
-But the older one simply vanishes? How the background process still words?
+But the older one simply vanishes? How the background process still works?
 Here lies the trick, calling `unlink` on the older file removes it, but
 since the process is running the older file it will keep existing! :)
 
