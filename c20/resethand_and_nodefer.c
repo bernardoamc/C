@@ -46,19 +46,18 @@ int main(int argc, char *argv[]) {
     pexit("sigaction");
   }
 
-  raise(SIGINT);
-  raise(SIGINT);
+  printf("Type CTRL+C to see NODEFER\n");
+  printf("Type CTRL+\\ to see RESETHAND\n");
 
   // RESETHAND
   act.sa_handler = resetHandler;
   act.sa_flags = SA_RESETHAND;
 
-  if (sigaction(SIGINT, &act, NULL) == -1) {
+  if (sigaction(SIGQUIT, &act, NULL) == -1) {
     pexit("sigaction");
   }
 
-  raise(SIGINT);
-  raise(SIGINT);
+  while(1){}
 
   exit(EXIT_SUCCESS);
 }
