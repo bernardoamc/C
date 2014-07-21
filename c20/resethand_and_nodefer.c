@@ -12,7 +12,7 @@
  * RESETHAND
  * When a signal is caught this flag reset its disposition to the default.
  * To be clear: The handler we implemented will be executed only once, after
- * that the signal will do it's default action.
+ * that the signal will do its default action.
  *
  * Usage:
  *
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     pexit("sigaction");
   }
 
-  while(1){}
+  pause();
 
   exit(EXIT_SUCCESS);
 }
