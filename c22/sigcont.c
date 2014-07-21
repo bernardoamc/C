@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
 
   for (start = time(NULL); time(NULL) < start + 15;);
 
-  printf("Unblocking SIGCONT, call it with kill -CONT %ld\n", (long) getpid());
+  printf("Unblocking SIGCONT\n");
 
   if (sigprocmask(SIG_UNBLOCK, &blocked, NULL) == -1) {
     pexit("sigprocmask");

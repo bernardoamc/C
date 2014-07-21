@@ -56,9 +56,7 @@ sighandler_t _sigset(int sig, sighandler_t handler) {
   if (handler == SIG_HOLD) {
     _sighold(sig);
 
-    if (sigaction(sig, NULL, &oldAct) == -1) {
-      return -1;
-    }
+    return SIG_HOLD;
   } else {
     newAct.sa_handler = handler;
 
