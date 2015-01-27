@@ -1,0 +1,21 @@
+$ cc -o longrunner longrunner.c
+$ ./longrunner &                      #Leave running in background
+$ vi longrunner.c                     #Make some changes to the source code
+$ cc -o longrunner longrunner.c
+
+The last command overwrites the existing executable of the same name.
+How is this possible?!
+
+-------------------------------------------------------------------------------
+
+This, my friend, is possible because the compiler is not trying to open the
+file, instead it's just creating a new one as we can see with the `ls -li` call.
+
+But the older one simply vanishes? How the background process still works?
+Here lies the trick, calling `unlink` on the older file removes it, but
+since the process is running the older file it will keep existing! :)
+
+This happens because the kernel mantains a link count for each i-node AND counts
+open file descriptors for a file. Even if the link count for an i-node reaches
+zero, if a process has this file open, it will keep existing till the process
+is closed and the open file descriptor count is zero.
